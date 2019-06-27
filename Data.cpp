@@ -312,28 +312,68 @@ std::vector<double> AlignedYvectWithEmbedX(std::multimap<double, std::vector<flo
 
 }
 
+
+/*
+ * @brief: uses a map to put data into groups, were each group can have multiple sets of variables associated with it. were one variable
+ * represents an index to a set of strings, in short this creates a one hot encoding for that variable
+ *
+ * @tparam set<T> &set_2_convert: A set of variables that need to be converted
+ * @tparam vector<vector<T1> &data: The input data that contains the variables
+ * @tparam T2 &grouped: The container that we are putting the grouped by and converted into
+ * @param int group_by_column: The column number of variable that we are grouping by
+ * @param int set_column: The column number in the data vector for the data found in groups that we are converting
+ * @param set<int> var_columns: The columns to be used as variables
+ *
+ */
 template< typename T, typename T1, typename T2 >
-void GroupBy(std::set<T> &groups,std::vector<std::vector<T1> > &data, std::vector<T2> &grouped, int group_by_column, int value_column){
+void GroupBy(std::set<T> &set_2_conert,std::vector<std::vector<T1> > &data, T2 &grouped, int group_by_column, int set_column, set<int> var_columns){
 
-	auto set_it = groups.begin();
+	auto set_it = set_2_conert.begin();
 
+	string group_by_string;
 
-	string type_string;
-	for( ; set_it != groups.end(); ++set_it){
-		for(auto data_it : data){
-			if(*set_it == data_it[group_by_column]){
-			type_string = data_it[value_column];
-			cout<<data_it[value_column]<<endl;
-			grouped.push_back(std::stod(data_it[value_column]));
+	decltype(grouped.begin()->second) tmp_vect;
+
+	int     status;
+	char   *realname;
+	const std::type_info  &ti = typeid(tmp_vect.data());
+	realname = abi::__cxa_demangle(ti.name(), 0, 0, &status);
+	cout<<realname<<endl;
+	string type = realname;
+
+	int count=0;
+
+	if(string(realname).find("double")!= std::string::npos){
+
+		std::vector<double> tmp_vect(var_columns.size());
+
+		//uint data_it = 0; data_it <data.size(); ++data_it
+		for(auto data_it : data ){
+			for(auto it = var_columns.begin(); it!= var_columns.end(); ++it){
+				if(*it != group_by_column){
+					if(*it == set_column)
+						tmp_vect[count]=(double)std::distance(set_2_conert.begin(),set_2_conert.find(data_it[*it]));
+					else
+						tmp_vect[count] = std::stod(data_it[*it]);
+				}
+				count++;
 			}
+			grouped[data_it[group_by_column]].push_back(tmp_vect);
+			count=0;
 		}
-
 	}
 
 
-}
-template void GroupBy<string, string, double>(std::set<string> &, std::vector<std::vector<string > > &, std::vector<double> &, int,int);
 
+
+}
+template void GroupBy<string, string, map<string, vector<vector<double> > > >(std::set<string> &, std::vector<std::vector<string > > &, map<string, vector<vector< double> > > &, int,int,set<int>);
+
+
+/*
+ * @brief: converts everything into a map<type, vector<double> >
+ *
+ */
 template< typename T, typename T1 >
 void GroupBy(T &data, T1 &grouped, int group_by_column, int value_column){
 
@@ -341,7 +381,7 @@ void GroupBy(T &data, T1 &grouped, int group_by_column, int value_column){
 	string type;
 	double value;
 
-	for(int data_it = 0; data_it <data.size(); ++data_it){
+	for(uint data_it = 0; data_it <data.size(); ++data_it){
 		type = data[data_it][group_by_column];
 		value = std::stod(data[data_it][value_column]);
 		grouped[data[data_it][group_by_column]].push_back(std::stod(data[data_it][value_column]));
@@ -354,6 +394,14 @@ void GroupBy(T &data, T1 &grouped, int group_by_column, int value_column){
 }
 template void GroupBy<std::vector<std::vector<string > >, std::map<string, std::vector<double> > >( std::vector<std::vector<string > > &, std::map<string, std::vector<double> >  &, int,int);
 
+
+/*
+ * @brief: Converts column in a vector<vector<string> > to a single vector<float>
+ *
+ * @param vector<std::vector<string> >: &data_the data
+ * @param int colum: column number of data to be converted to float
+ *
+ */
 std::vector<float> VectorVectorStringToVectorFloat(std::vector<std::vector<string> > &data_in, int column){
 
 	std::vector<float> tmp(data_in.size());

@@ -13,9 +13,9 @@
 
 #include <limits>
 #include <numeric>
-
+#include <typeinfo>
 #include <thread>
-
+#include <cxxabi.h>
 
 
 namespace MyData {
@@ -39,7 +39,7 @@ namespace MyData {
 
 
 	template< typename T, typename T1, typename T2 >
-	void GroupBy(std::set<T> &groups,std::vector<std::vector<T1> > &data, std::vector<T2> &grouped, int group_by_column, int value_column);
+	void GroupBy(std::set<T> &groups,std::vector<std::vector<T1> > &data, T2 &grouped, int group_by_column, int set_column, set<int> var_columns);
 
 	template<typename T, typename T1 >
 	void GroupBy(T &data, T1 &grouped, int group_by_column, int value_column);
