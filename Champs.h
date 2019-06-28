@@ -17,9 +17,15 @@ public:
 	virtual ~Champs();
 
 	void ChampsMain();
+	void ChampsTrain();
+	void ScalarCouplingContributions();
+	void MergeTrainAndStructures();
+	//void BuildStructuresMap
 	vector<vector<string> > Parse(string filename, std::set<string> &my_set, int set_column =-1);
+	vector<vector<string> > Parse(string filename);
 	void SetFileNames(string path);
 	void SetDataIter(int end);
+
 
 
 	std::string file_path_;
@@ -37,6 +43,8 @@ public:
 	std::set<string> atom_set_;
 	std::set<string> type_set_;
 	std::vector<std::vector<string > > stuctures_vect;
+	std::map<string, std::vector<std::vector<double> > > stuctures_map_;
+	std::map<string, std::vector<std::vector<double> > > train_map_;
 
 	std::vector<float > hist_vect_;//marginal-> or percent of data that falls in that bin
 	std::vector<float > hist_vect_bin_;//bin values so (-inf,1],(1,2],....(n,inf) were 1,2,...,n represent the range of the bins
