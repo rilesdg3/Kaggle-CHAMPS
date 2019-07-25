@@ -325,10 +325,10 @@ std::vector<double> AlignedYvectWithEmbedX(std::multimap<double, std::vector<flo
  * @param set<int> var_columns: The columns to be used as variables
  *
  */
-template< typename T, typename T1, typename T2 >
-void GroupBy(std::set<T> &set_2_conert,std::vector<std::vector<T1> > &data, T2 &grouped, int group_by_column, int set_column, set<int> var_columns){
+template< typename T, typename T1, typename T2, typename T3 >
+void GroupBy(std::set<T> &set_2_convert,std::vector<std::vector<T1> > &data, T2 &grouped, int group_by_column, int set_column, T3 &var_columns){
 
-	auto set_it = set_2_conert.begin();
+	//auto set_it = set_2_convert.begin();
 
 	string group_by_string;
 
@@ -352,7 +352,7 @@ void GroupBy(std::set<T> &set_2_conert,std::vector<std::vector<T1> > &data, T2 &
 			for(auto it = var_columns.begin(); it!= var_columns.end(); ++it){
 				if(*it != group_by_column){
 					if(*it == set_column)
-						tmp_vect[count]=(double)std::distance(set_2_conert.begin(),set_2_conert.find(data_it[*it]));
+						tmp_vect[count]=(double)std::distance(set_2_convert.begin(),set_2_convert.find(data_it[*it]));
 					else
 						tmp_vect[count] = std::stod(data_it[*it]);
 				}
@@ -367,8 +367,9 @@ void GroupBy(std::set<T> &set_2_conert,std::vector<std::vector<T1> > &data, T2 &
 
 
 }
-template void GroupBy<string, string, map<string, vector<vector<double> > > >(std::set<string> &, std::vector<std::vector<string > > &, map<string, vector<vector< double> > > &, int,int,set<int>);
-
+template void GroupBy<string, string, map<string, vector<vector<double> > > >(std::set<string> &, std::vector<std::vector<string > > &, map<string, vector<vector< double> > > &, int,int,std::set<int> &);
+template void GroupBy<string, string, map<string, vector<vector<double> > > >(std::set<string> &, std::vector<std::vector<string > > &, map<string, vector<vector< double> > > &, int,int,std::unordered_set<int> &);
+template void GroupBy<string, string, map<string, vector<vector<double> > > >(std::set<string> &, std::vector<std::vector<string > > &, map<string, vector<vector< double> > > &, int,int,vector<int> &);
 
 /*
  * @brief: converts everything into a map<type, vector<double> >
